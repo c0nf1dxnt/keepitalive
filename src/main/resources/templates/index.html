@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Website Availability Monitor</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .status-UP { color: green; font-weight: bold; }
+        .status-DOWN { color: red; font-weight: bold; }
+        .status-PENDING { color: orange; }
+        form { margin-bottom: 2em; }
+    </style>
+</head>
+<body>
+
+<h1>Website Availability Monitor</h1>
+
+<form action="/add" method="post" th:action="@{/add}">
+    <label for="url-input">Add a new site to monitor:</label>
+    <input type="text" id="url-input" name="url" size="50" required placeholder="https://example.com">
+    <button type="submit">Add</button>
+</form>
+
+<table>
+    <thead>
+    <tr>
+        <th>URL</th>
+        <th>Status</th>
+        <th>Last Checked</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${websites.isEmpty()}">
+        <td colspan="3">No sites to monitor yet.</td>
+    </tr>
+    <tr th:each="website : ${websites}">
+        <td th:text="${website.url}">https://example.com</td>
+        <td>
+            <span th:text="${website.status}"
+                  th:class="${'status-' + (website.status.startsWith('DOWN') ? 'DOWN' : website.status)}">
+                UP
+            </span>
+        </td>
+        <td th:text="${website.lastChecked != null ? #temporals.format(website.lastChecked, 'dd.MM.yyyy HH:mm:ss') : 'Not checked yet'}">
+            01.01.2025 12:00:00
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
